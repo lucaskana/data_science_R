@@ -2,6 +2,7 @@
 #system("git -C C:/DEV/VivoHybris log --since=\"2019-10-11\" --no-merges --oneline --shortstat \> ./git_changes.csv")
 
 install.packages("naniar")
+install.packages("ggplot2")
 #install.packages("pdftools")
 #devtools::install_github("quanteda/readtext") 
 # sudo apt-get install r-base-dev build-essential 
@@ -12,8 +13,10 @@ library(tidyverse)
 library(readtext)
 library(tidyr)
 library(naniar)
+library(ggplot2)
 
 #system("mkdir data")
+
 system("git -C /media/lucas/SHARED/HY/VivoHybris log --since=\"2019-10-11\" --no-merges --oneline --shortstat > data/git_changes.csv")
 system("git -C /media/lucas/SHARED/HY/VivoHybris log --since=\"2019-10-11\" --no-merges --date=local --pretty=format:\"%h; %an; %cd\" > data/git_by_date.csv")
 system("git -C /media/lucas/SHARED/HY/VivoHybris log --since=\"2019-10-11\" --no-merges --oneline --numstat > data/git_stats.txt")
@@ -27,8 +30,6 @@ df_git_by_date <- df_git_by_date %>% rename(
 
 df_git_changes <- read.csv("data/git_changes.csv", sep=";", header=FALSE)
 
-#base_select_4 <- select(df_git_changes, starts_with("4")) # para algum prefixo comum
-
 ajustar_hash <- function(input) {
   if(!startsWith(input," ")) {
     output_data <- str_extract(input,'^[\\S]{9}')
@@ -40,14 +41,49 @@ ajustar_hash <- function(input) {
   }
 
 df_git_changes <- df_git_changes %>% mutate(hash=ajustar_hash(df_git_changes$V1))
+df_git_changes <- df_git_changes %>% rename("message" = 1)
 df_git_changes <- df_git_changes %>% fill(hash, .direction = 'down')
+df_git_changes <- df_git_changes %>% filter(startsWith(x = df_git_changes$message,prefix = " "))
 
+df_git_changes <- df_git_changes %>% mutate(files_changed=str_extract(df_git_changes$message, "\\d+(?= file?)"))
+df_git_changes <- df_git_changes %>% mutate(linsert=str_extract(df_git_changes$message, "\\d+(?= insertion?)"))
+df_git_changes <- df_git_changes %>% mutate(ldelete=str_extract(df_git_changes$message, "\\d+(?= deletion?)"))
 
-df_git_changes[1,1]
+df_git_changes[is.na(df_git_changes)] = 0
+
+df_git_changes$files_changed <- as.numeric(df_git_changes$files_changed)
+df_git_changes$linsert <- as.numeric(df_git_changes$linsert)
+df_git_changes$ldelete <- as.numeric(df_git_changes$ldelete)
+
+df_git_changes <- df_git_changes %>% mutate(ldiff=linsert - ldelete)
+
+df_git_changes <- filter(df_git_changes, ldelete < 30)
+df_git_changes <- filter(df_git_changes, linsert < 30)
+
+ggplot(data = df_git_changes) + 
+  geom_point(mapping = aes(x = linsert, y = ldelete))
+
+ggplot(data = df_git_changes) + 
+  geom_bar(mapping = aes(x = linsert))
+
+ggplot(data = df_git_changes) + 
+  geom_bar(mapping = aes(x = ldelete))
+
+ggplot(data = df_git_changes) + 
+  geom_bar(mapping = aes(x = files_changed))
+
+ggplot(data = df_git_changes) + 
+  geom_bar(mapping = aes(x = ldiff))
+
+ggplot(df_git_changes, aes(y=linsert)) + 
+  geom_boxplot()
+#########################################################################################################################
+
+#str_extract(df_git_changes[1,1], "\\d+(?= insertion?)")
+#str_extract(df_git_changes[9,1], "\\d+(?= deletion?)")
+
 ajustar_hash(df_git_changes[2,1])
 df_git_changes %>% mutate(hash=ajustar_hash(df_git_changes$V1))
-
-
 
 na_strings <- c("character(0)", "N A", "N / A", "N/A", "N/ A", "Not Available", "NOt available")
 
@@ -80,7 +116,7 @@ df_3 <- df %>% replace_with_na_all(condition = ~.x %in% na_strings)
 
 df_git_changes %>% replace_with_na_all(condition = ~.x == "character(0)")
 
-
+#base_select_4 <- select(df_git_changes, starts_with("4")) # para algum prefixo comum
 #df_git_changes[is.na(df_git_changes)] <- '.'
 #df_git_changes[is.na(df_git_changes)]
 #df_git_changes <- mutate(df_git_changes, 
