@@ -57,8 +57,8 @@ df_git_changes$ldelete <- as.numeric(df_git_changes$ldelete)
 
 df_git_changes <- df_git_changes %>% mutate(ldiff=linsert - ldelete)
 
-df_git_changes <- filter(df_git_changes, ldelete < 30)
-df_git_changes <- filter(df_git_changes, linsert < 30)
+df_git_changes <- filter(df_git_changes, ldelete < 9)
+df_git_changes <- filter(df_git_changes, linsert < 9)
 
 ggplot(data = df_git_changes) + 
   geom_point(mapping = aes(x = linsert, y = ldelete))
@@ -77,6 +77,9 @@ ggplot(data = df_git_changes) +
 
 ggplot(df_git_changes, aes(y=linsert)) + 
   geom_boxplot()
+
+boxplot(select(df_git_changes,linsert,ldelete,files_changed,ldiff))
+
 #########################################################################################################################
 
 #str_extract(df_git_changes[1,1], "\\d+(?= insertion?)")
