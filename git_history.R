@@ -80,6 +80,12 @@ ggplot(df_git_changes, aes(y=linsert)) +
 
 boxplot(select(df_git_changes,linsert,ldelete,files_changed,ldiff))
 
+ggplot(data=df_git_changes, aes(x=linsert, y=ldelete)) +
+  geom_line(color="red")+
+  geom_point()
+
+ggplot(df_git_changes, aes(x=linsert, y=ldelete)) + geom_point()
+
 #########################################################################################################################
 
 #str_extract(df_git_changes[1,1], "\\d+(?= insertion?)")
