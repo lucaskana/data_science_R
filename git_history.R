@@ -57,8 +57,8 @@ df_git_changes$ldelete <- as.numeric(df_git_changes$ldelete)
 
 df_git_changes <- df_git_changes %>% mutate(ldiff=linsert - ldelete)
 
-df_git_changes <- filter(df_git_changes, ldelete < 9)
-df_git_changes <- filter(df_git_changes, linsert < 9)
+df_git_changes <- filter(df_git_changes, ldelete < 2000)
+df_git_changes <- filter(df_git_changes, linsert < 2000)
 
 ggplot(data = df_git_changes) + 
   geom_point(mapping = aes(x = linsert, y = ldelete))
@@ -84,7 +84,9 @@ ggplot(data=df_git_changes, aes(x=linsert, y=ldelete)) +
   geom_line(color="red")+
   geom_point()
 
-ggplot(df_git_changes, aes(x=linsert, y=ldelete)) + geom_point()
+ggplot(df_git_changes, aes(x=linsert, y=ldiff)) + geom_point()
+
+ggplot(df_git_changes, aes(x=ldelete, y=ldiff)) + geom_point()
 
 #########################################################################################################################
 
