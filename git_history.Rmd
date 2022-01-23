@@ -1,0 +1,122 @@
+---
+title: "git_history"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(include = FALSE)
+
+library(tidyverse)
+library(readtext)
+library(tidyr)
+library(naniar)
+library(ggplot2)
+
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r command_line, include=FALSE}
+system("git -C /media/lucas/SHARED/HY/VivoHybris log --since=\"2019-10-11\" --no-merges --oneline --shortstat > data/git_changes.csv")
+system("git -C /media/lucas/SHARED/HY/VivoHybris log --since=\"2019-10-11\" --no-merges --date=local --pretty=format:\"%h; %an; %cd\" > data/git_by_date.csv")
+system("git -C /media/lucas/SHARED/HY/VivoHybris log --since=\"2019-10-11\" --no-merges --oneline --numstat > data/git_stats.txt")
+
+```
+
+## Prepare Data
+
+```{r prepare, echo=FALSE, warning=FALSE}
+df_git_by_date <- read.csv("data/git_by_date.csv", sep=";", header=FALSE)
+df_git_by_date <- df_git_by_date %>% rename(
+                                            "hash"=1,
+                                            "name"=2,
+                                            "date"=3
+                                            )
+
+df_git_changes <- read.csv("data/git_changes.csv", sep=";", header=FALSE)
+
+ajustar_hash <- function(input) {
+  if(!startsWith(input," ")) {
+    output_data <- str_extract(input,'^[\\S]{9}')
+    return(output_data)
+  }
+  else {
+    return(NA)
+    }   
+  }
+
+df_git_changes <- df_git_changes %>% mutate(hash=ajustar_hash(df_git_changes$V1))
+df_git_changes <- df_git_changes %>% rename("message" = 1)
+df_git_changes <- df_git_changes %>% fill(hash, .direction = 'down')
+df_git_changes <- df_git_changes %>% filter(startsWith(x = df_git_changes$message,prefix = " "))
+
+df_git_changes <- df_git_changes %>% mutate(files_changed=str_extract(df_git_changes$message, "\\d+(?= file?)"))
+df_git_changes <- df_git_changes %>% mutate(linsert=str_extract(df_git_changes$message, "\\d+(?= insertion?)"))
+df_git_changes <- df_git_changes %>% mutate(ldelete=str_extract(df_git_changes$message, "\\d+(?= deletion?)"))
+
+df_git_changes[is.na(df_git_changes)] = 0
+
+df_git_changes$files_changed <- as.numeric(df_git_changes$files_changed)
+df_git_changes$linsert <- as.numeric(df_git_changes$linsert)
+df_git_changes$ldelete <- as.numeric(df_git_changes$ldelete)
+
+df_git_changes <- df_git_changes %>% mutate(ldiff=linsert - ldelete)
+
+df_git_changes <- filter(df_git_changes, ldelete < 2000)
+df_git_changes <- filter(df_git_changes, linsert < 2000)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+```{r plot}
+ggplot(data = df_git_changes) + 
+  geom_point(mapping = aes(x = linsert, y = ldelete)) +
+  labs(title = "Insertion VS Deletion") +
+  theme(plot.title = element_text(family = "Helvetica", face = "bold", colour = "red", size = (15), lineheight = 0.9),
+        axis.title = element_text(family = "Helvetica", size = (10), colour = "steelblue4"),
+        axis.text = element_text(family = "Courier", colour = "cornflowerblue", size = (10))
+        ) +
+  ylab("nº lines deleted") +
+  xlab("nº lines inserted")
+
+ggplot(data = df_git_changes) + 
+  geom_bar(mapping = aes(x = linsert)) +
+  ylim(0, 200) +
+  xlim(0,50) +
+  xlab("nº lines inserted")
+
+ggplot(data = df_git_changes) + 
+  geom_bar(mapping = aes(x = ldelete)) +
+  ylim(0, 200) +
+  xlim(0,50) +
+  xlab("nº lines deleted")
+
+ggplot(data = df_git_changes) + 
+  geom_bar(mapping = aes(x = files_changed)) +
+  ylim(0, 1000) +
+  xlim(0,50)
+
+ggplot(data = df_git_changes) + 
+  geom_bar(mapping = aes(x = ldiff)) +
+  xlim(-100,100)
+
+ggplot(df_git_changes, aes(y=linsert)) + 
+  geom_boxplot()
+
+boxplot(select(df_git_changes,linsert,ldelete,files_changed,ldiff))
+
+ggplot(data=df_git_changes, aes(x=linsert, y=ldelete)) +
+  geom_line(color="red")+
+  geom_point()
+
+ggplot(df_git_changes, aes(x=linsert, y=ldiff)) + geom_point()
+
+ggplot(df_git_changes, aes(x=ldelete, y=ldiff)) + geom_point()
+```
+
+

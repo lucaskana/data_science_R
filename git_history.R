@@ -15,9 +15,19 @@ library(tidyr)
 library(naniar)
 library(ggplot2)
 
+install.packages("rvest")
+library(rvest)
+
+html <- read_html("https://www.kinimoveis.com.br/imoveis/a-venda/apartamento/vila-mariana")
+html %>% html_nodes(xpath="//div[@class='card-loading']")
+card <- html_elements(html,xpath="//div[@class='card-img-top b-lazy photo-0  page-1 b-loaded']")
+div <- html_elements(html, "div")
+html_card <- html_children(card)
 #system("mkdir data")
 
-system("git -C /media/lucas/SHARED/HY/VivoHybris log --since=\"2019-10-11\" --no-merges --oneline --shortstat > data/git_changes.csv")
+html_children(card)
+
+  system("git -C /media/lucas/SHARED/HY/VivoHybris log --since=\"2019-10-11\" --no-merges --oneline --shortstat > data/git_changes.csv")
 system("git -C /media/lucas/SHARED/HY/VivoHybris log --since=\"2019-10-11\" --no-merges --date=local --pretty=format:\"%h; %an; %cd\" > data/git_by_date.csv")
 system("git -C /media/lucas/SHARED/HY/VivoHybris log --since=\"2019-10-11\" --no-merges --oneline --numstat > data/git_stats.txt")
 
@@ -57,14 +67,17 @@ df_git_changes$ldelete <- as.numeric(df_git_changes$ldelete)
 
 df_git_changes <- df_git_changes %>% mutate(ldiff=linsert - ldelete)
 
-df_git_changes <- filter(df_git_changes, ldelete < 9)
-df_git_changes <- filter(df_git_changes, linsert < 9)
+df_git_changes <- filter(df_git_changes, ldelete < 2000)
+df_git_changes <- filter(df_git_changes, linsert < 2000)
 
 ggplot(data = df_git_changes) + 
   geom_point(mapping = aes(x = linsert, y = ldelete))
 
 ggplot(data = df_git_changes) + 
-  geom_bar(mapping = aes(x = linsert))
+  geom_bar(mapping = aes(x = linsert)) +
+  ylim(0, 200) +
+  xlim(0,50) +
+  xlab("nº lines inserted")
 
 ggplot(data = df_git_changes) + 
   geom_bar(mapping = aes(x = ldelete))
@@ -84,7 +97,9 @@ ggplot(data=df_git_changes, aes(x=linsert, y=ldelete)) +
   geom_line(color="red")+
   geom_point()
 
-ggplot(df_git_changes, aes(x=linsert, y=ldelete)) + geom_point()
+ggplot(df_git_changes, aes(x=linsert, y=ldiff)) + geom_point()
+
+ggplot(df_git_changes, aes(x=ldelete, y=ldiff)) + geom_point()
 
 #########################################################################################################################
 
