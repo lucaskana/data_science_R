@@ -76,13 +76,18 @@ y_test <- read.delim("uci_data/UCI HAR Dataset/test/y_test.txt"
 
 y_test$activity <- as.factor(y_test$activity)
 
-X_test['p'] <- predict(tree, X_test)
+X_test['p'] <- predict(tree, X_test,type="response")
+
+?predict
+
+res <- predict(tree, X_test,type="class")
+class(res)
 #X_test <- cbind(X_test,y_test)
 #X_test$activity <- as.double(X_test$activity)
 #X_test['r'] = X_test$activity - X_test$p
 
-confusionMatrix(X_test$p, y_test)
-
+confusionMatrix(res, y_test$activity)
+str(y_test)
 X_test$p
 
 glimpse(X_test)
