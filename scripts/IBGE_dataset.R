@@ -13,6 +13,11 @@ if(sum(as.numeric(!pacotes %in% installed.packages())) != 0){
   sapply(pacotes, require, character = T) 
 }
 
+
+library(readxl)
+censo <- read_excel("data/EDUC  BRUc_0003_35_010500.xls")
+View(censo)
+
 ################################## SHAPEFILES ##################################
 
 # 
