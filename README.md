@@ -10,8 +10,7 @@ Aficionado por novas tecnologias, nos últimos anos tive contato com [Unity ML](
 
 ``` bash
 ├───ESALQ <Arquivos de refência>
-├───data <Folder para download dos Datasets>
-├───utils <Scripts de suporte / utilitarios>
-├───learning <Scripts usados para aprendizado>
-└───scripts <Scripts considerado finalizados>
+├───data                    <various data files: Kaggle / UCI / etc>
+├───src                     <executable scripts>
+└───noteboks                <Noteboks>
 ```

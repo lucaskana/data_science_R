@@ -22,6 +22,17 @@ library("rvest")
 library("httr")
 library("jsonlite")
 library("data.table")
+library("dplyr")
+library("tidyr")
+
+agregados <- fromJSON("https://servicodados.ibge.gov.br/api/v3/agregados")
+#agregados %>% unnest(agregados,names_repair = "check_unique")
+
+str(agregados)
+
+filtro <- agregados %>%  filter(nome == "Pesquisa Nacional de Saúde")
+
+selagregados <- filtro %>% select(agregados)
 
 #1 - Listagem de indicadores - mostra na página web
 url = "https://servicodados.ibge.gov.br/api/v1/paises/indicadores/77823"

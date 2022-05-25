@@ -24,7 +24,8 @@ library("rpart")
 
 #Baixa os dados
 data <- Boston
-
+View(data)
+?View
 #Uma olhada nos dados
 head(data)
 
