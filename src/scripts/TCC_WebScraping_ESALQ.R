@@ -48,12 +48,6 @@ Data <- as.data.frame(do.call(rbind, temas),col.names = c("temas"))
 
 system("taskkill /im java.exe /f", intern=FALSE, ignore.stdout=FALSE)
 
-
-
-
-
-
-
 #########################
 #
 # SandBox
@@ -63,20 +57,17 @@ system("taskkill /im java.exe /f", intern=FALSE, ignore.stdout=FALSE)
 
 #resultlist <- result$findChildElements(using = 'xpath', value = ".//div[contains(@class, 'row mt-4')]")
 
-length(resultlist[[4]]$findChildElements(using = 'xpath', value = ".//div[contains(@class, 'col-12 col-sm-6 col-lg-4 col-xl-3 mb-4 d-flex align-content-between')]"))
+#length(resultlist[[4]]$findChildElements(using = 'xpath', value = ".//div[contains(@class, 'col-12 col-sm-6 col-lg-4 col-xl-3 mb-4 d-flex align-content-between')]"))
 
-tcclist <-result$findChildElements(using = 'xpath', value = ".//div[contains(@class, 'col-12 col-sm-6 col-lg-4 col-xl-3 mb-4 d-flex align-content-between')]/div")
-tcclist[[2]]$findChildElement(using = 'tag name', value = 'div')$getElementAttribute('innerHTML')
-tcclist[[2]]$getElementAttribute('innerHTML')
-tcclist[[1]]$findChildElement(using = 'class name', value = 'col')$getElementText()
+#tcclist <-result$findChildElements(using = 'xpath', value = ".//div[contains(@class, 'col-12 col-sm-6 col-lg-4 col-xl-3 mb-4 d-flex align-content-between')]/div")
+#tcclist[[2]]$findChildElement(using = 'tag name', value = 'div')$getElementAttribute('innerHTML')
+#tcclist[[2]]$getElementAttribute('innerHTML')
+#tcclist[[1]]$findChildElement(using = 'class name', value = 'col')$getElementText()
 
-tcclist[[1]]$getElementAttribute('innerHTML')
+#tcclist[[1]]$getElementAttribute('innerHTML')
 
-Data <- as.data.frame(do.call(rbind, temas),col.names = c("temas"))  
-print(temas)
-
-
-
+#Data <- as.data.frame(do.call(rbind, temas),col.names = c("temas"))  
+#print(temas)
 
 #dropcourse <- remDr$findElement("id", "courses")
 #opts <- dropcourse$selectTag()
@@ -93,46 +84,30 @@ print(temas)
 #subitems$findChildElements(using = 'tag name', value = 'div')[[3]]$getElementText()
 
 ## Matar processo Selenium
-
-
-
 #pesquisar$sendKeysToElement("NEUROD1")
-
 #pesquisar$getElementAttribute('innerHTML')
-
-
-resultlist[[1]]$getElementAttribute('innerHTML')
-
-
-webElem <- dropcourse$findElement(using = 'css selector', value = "option:nth-child(5)")
-webElem$clickElement()
+#resultlist[[1]]$getElementAttribute('innerHTML')
+#webElem <- dropcourse$findElement(using = 'css selector', value = "option:nth-child(5)")
+#webElem$clickElement()
 # check whether it is selected
-
-opts$selected
-opts$elements[[3]]$clickElement()
-opts$selected <- c(FALSE,FALSE,FALSE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE)
-
-
-
-result <- remDr$findElement("id", "presentation-anchor")
-resultlist <- result$findChildElement(using = 'tag name', value = 'section')
-resultdiv <- resultlist$findChildElements(using = 'tag name', value = 'div')
-resultdiv[[1]]$getElementAttribute('innerHTML')
-resultdiv[[3]]$getElementAttribute('innerHTML')
-search <- remDr$findElement("class", "d-flex")
-search$getElementAttribute('innerHTML')
-searchbutton <- pesquisar$findChildElement(using = 'tag name', value = 'button')
-
+#opts$selected
+#opts$elements[[3]]$clickElement()
+#opts$selected <- c(FALSE,FALSE,FALSE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE)
+#result <- remDr$findElement("id", "presentation-anchor")
+#resultlist <- result$findChildElement(using = 'tag name', value = 'section')
+#resultdiv <- resultlist$findChildElements(using = 'tag name', value = 'div')
+#resultdiv[[1]]$getElementAttribute('innerHTML')
+#resultdiv[[3]]$getElementAttribute('innerHTML')
+#search <- remDr$findElement("class", "d-flex")
+#search$getElementAttribute('innerHTML')
+#searchbutton <- pesquisar$findChildElement(using = 'tag name', value = 'button')
 #rD <- rsDriver(verbose=TRUE,port=free_port(),browserName='chrome',check=TRUE)
 #rD[["server"]]$stop()
-
 #driver <- rsDriver(browser=c("chrome"),chromedriver='102.0.5005.115',port=4567L)
 #driver <- rsDriver(browser=c("chrome"),port=4567L)
 #drive$navigate("http://www.google.com/ncr")
 #remote_driver$open()
-
 #Abre o servidor
 #remDr$open()
-
-wikipedia <- read_html("https://defesas.linka.la/#presentation-anchor")
-wikipedia %>% html_text()
+#wikipedia <- read_html("https://defesas.linka.la/#presentation-anchor")
+#wikipedia %>% html_text()
