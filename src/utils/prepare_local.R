@@ -1,6 +1,6 @@
 library("stringr")
 
-listfiles <- list.files(path="./ESALQ",pattern = "*.zip",full.names=TRUE)
+listfiles <- list.files(path="./src/ESALQ",pattern = "*.zip",full.names=TRUE)
 
 ## Unzip Files
 for(item in listfiles){
