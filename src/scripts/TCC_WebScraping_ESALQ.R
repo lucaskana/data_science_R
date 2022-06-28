@@ -39,17 +39,19 @@ result <- remDr$findElement("id", "presentation-anchor")
 
 tcclist <-result$findChildElements(using = 'xpath', value = ".//div[contains(@class, 'col-12 col-sm-6 col-lg-4 col-xl-3 mb-4 d-flex align-content-between')]/div")
 
+
+## Loop Over temas
 temas <- c()
-# loop version 2
+
 for (i in 1:length(tcclist)) {
   temas <-  append(temas,tcclist[[i]]$findChildElement(using = 'tag name', value = 'div')$getElementAttribute('innerHTML'))
 }
 
+## Loop Over agenda
 agenda <- c()
 sectionTitle <- result$findChildElements(using = 'xpath', value = ".//section")
 resultlist <- result$findChildElements(using = 'xpath', value = ".//div[contains(@class, 'row mt-4')]")
 for (i in 1:length(resultlist)) {
-  #resultlist <- sectionTitle$findChildElements(using = 'xpath', value = ".//div[contains(@class, 'row mt-4')]")
   subitems <- resultlist[[i]]$findChildElements(using = 'xpath', value = ".//div[contains(@class, 'col-12 col-sm-6 col-lg-4 col-xl-3 mb-4 d-flex align-content-between')]")
   print(length(subitems))
   temp <- list(rep(sectionTitle[[i]]$getElementText(),length(subitems)))
@@ -69,44 +71,38 @@ system("taskkill /im java.exe /f", intern=FALSE, ignore.stdout=FALSE)
 #
 ########################
 
-resultlist <- result$findChildElements(using = 'xpath', value = ".//section/div")
-resultlist[[1]]$getElementAttribute('innerHTML')
+#resultlist <- sectionTitle$findChildElements(using = 'xpath', value = ".//div[contains(@class, 'row mt-4')]")
+#resultlist <- result$findChildElements(using = 'xpath', value = ".//section/div")
+#resultlist[[1]]$getElementAttribute('innerHTML')
 #resultlist[[1]]$findChildElements(using = 'xpath', value = ".//div[contains(@class, 'col-12 col-sm-6 col-lg-4 col-xl-3 mb-4 d-flex align-content-between')]")
-resultlist[[1]]$findChildElements(using = 'xpath', value = ".//div[contains(@class, 'col-12 col-sm-6 col-lg-4 col-xl-3 mb-4 d-flex align-content-between')]")[[1]]$getElementAttribute('innerHTML')
+#resultlist[[1]]$findChildElements(using = 'xpath', value = ".//div[contains(@class, 'col-12 col-sm-6 col-lg-4 col-xl-3 mb-4 d-flex align-content-between')]")[[1]]$getElementAttribute('innerHTML')
 
-resultlist <- result$findChildElements(using = 'xpath', value = ".//div[contains(@class, 'row mt-4')]")
-subitems <- resultlist[[3]]$findChildElements(using = 'xpath', value = ".//div[contains(@class, 'col-12 col-sm-6 col-lg-4 col-xl-3 mb-4 d-flex align-content-between')]")
+#resultlist <- result$findChildElements(using = 'xpath', value = ".//div[contains(@class, 'row mt-4')]")
+#subitems <- resultlist[[3]]$findChildElements(using = 'xpath', value = ".//div[contains(@class, 'col-12 col-sm-6 col-lg-4 col-xl-3 mb-4 d-flex align-content-between')]")
+#sectionTitle <- result$findChildElements(using = 'xpath', value = ".//section/div")
+#sectionTitle[[1]]$getElementAttribute('innerHTML')
+#sectionTitle[[1]]$getElementText()
+#resultlist <- result$findChildElements(using = 'xpath', value = ".//div[contains(@class, 'row mt-4')]")
+#subitems <- resultlist[[3]]$findChildElements(using = 'xpath', value = ".//div[contains(@class, 'col-12 col-sm-6 col-lg-4 col-xl-3 mb-4 d-flex align-content-between')]")
 
+#list(rep(sectionTitle[[1]]$getElementText(),length(subitems)))
+#length(subitems[[1]])
 
-sectionTitle <- result$findChildElements(using = 'xpath', value = ".//section/div")
-sectionTitle[[1]]$getElementAttribute('innerHTML')
-sectionTitle[[1]]$getElementText()
-
-resultlist <- result$findChildElements(using = 'xpath', value = ".//div[contains(@class, 'row mt-4')]")
-subitems <- resultlist[[3]]$findChildElements(using = 'xpath', value = ".//div[contains(@class, 'col-12 col-sm-6 col-lg-4 col-xl-3 mb-4 d-flex align-content-between')]")
-
-list(rep(sectionTitle[[1]]$getElementText(),length(subitems)))
-
-length(subitems[[1]])
-
-agenda <- c()
-sectionTitle <- result$findChildElements(using = 'xpath', value = ".//section")
-resultlist <- result$findChildElements(using = 'xpath', value = ".//div[contains(@class, 'row mt-4')]")
-for (i in 1:length(resultlist)) {
+#agenda <- c()
+#sectionTitle <- result$findChildElements(using = 'xpath', value = ".//section")
+#resultlist <- result$findChildElements(using = 'xpath', value = ".//div[contains(@class, 'row mt-4')]")
+#for (i in 1:length(resultlist)) {
   #resultlist <- sectionTitle$findChildElements(using = 'xpath', value = ".//div[contains(@class, 'row mt-4')]")
-  subitems <- resultlist[[i]]$findChildElements(using = 'xpath', value = ".//div[contains(@class, 'col-12 col-sm-6 col-lg-4 col-xl-3 mb-4 d-flex align-content-between')]")
-  print(length(subitems))
-  temp <- list(rep(sectionTitle[[i]]$getElementText(),length(subitems)))
-  agenda <- append(agenda,temp)
-}
+  #subitems <- resultlist[[i]]$findChildElements(using = 'xpath', value = ".//div[contains(@class, 'col-12 col-sm-6 col-lg-4 col-xl-3 mb-4 d-flex align-content-between')]")
+  #print(length(subitems))
+  #temp <- list(rep(sectionTitle[[i]]$getElementText(),length(subitems)))
+  #agenda <- append(agenda,temp)
+#}
 
-agenda <- unlist(agenda, recursive = TRUE, use.names = TRUE)
+#agenda <- unlist(agenda, recursive = TRUE, use.names = TRUE)
 
-student = data.frame(unlist(temas),unlist(agenda))
-
-subitems <- sectionTitle[[1]]$findChildElements(using = 'xpath', value = ".//div[contains(@class, 'col-12 col-sm-6 col-lg-4 col-xl-3 mb-4 d-flex align-content-between')]")
-
-
+#student = data.frame(unlist(temas),unlist(agenda))
+#subitems <- sectionTitle[[1]]$findChildElements(using = 'xpath', value = ".//div[contains(@class, 'col-12 col-sm-6 col-lg-4 col-xl-3 mb-4 d-flex align-content-between')]")
 #resultlist <- result$findChildElements(using = 'xpath', value = ".//div[contains(@class, 'row mt-4')]")
 
 #length(resultlist[[4]]$findChildElements(using = 'xpath', value = ".//div[contains(@class, 'col-12 col-sm-6 col-lg-4 col-xl-3 mb-4 d-flex align-content-between')]"))
