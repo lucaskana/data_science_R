@@ -1,6 +1,4 @@
 library("stringr")
-library(stringi)
-
 
 listfiles <- list.files(path="./src/ESALQ",pattern = "*.zip",full.names=TRUE)
 
