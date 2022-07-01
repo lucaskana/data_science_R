@@ -3,11 +3,15 @@ install.packages("RSelenium")
 install.packages("rvest")
 install.packages("tidyverse")
 install.packages("netstat")
+install.packages("writexl")
 
 library("httr")
 library("rvest")
 library("RSelenium")
 library(netstat)
+library("writexl")
+library(stringr)
+library(dplyr)
 
 
 rD <- rsDriver(browser="chrome", chromever="103.0.5060.53", verbose=T)
@@ -18,7 +22,7 @@ pesquisar <- remDr$findElement("class", "rbt")
 ## Criterio de busca
 
 
-option <- remDr$findElement(using = 'xpath',value = "//*[text() = '29/06/2022']")
+option <- remDr$findElement(using = 'xpath',value = "//*[text() = '01/07/2022']")
 option$clickElement()
 
 option <- remDr$findElement(using = 'xpath',value = "//*[text() = 'Todos os horários']")
@@ -60,9 +64,20 @@ for (i in 1:length(resultlist)) {
 
 agenda <- unlist(agenda, recursive = TRUE, use.names = TRUE)
 
-Data <- data.frame(title=unlist(temas),agenda=unlist(agenda))
-names(Data) = c("Title","Agenda")
+df <- data.frame(title=unlist(temas),agenda=unlist(agenda))
+names(df) = c("Title","Agenda")
 
+## Limpar caracteres
+df$Agenda <- gsub("Defesas\nRecolher","",as.character(df$Agenda))
+df$Agenda <- gsub("Defesas\nMostrar","",as.character(df$Agenda))
+
+df[c('Dia', 'Horario')] <- str_split_fixed(df$Agenda, '\n', 2)
+df$Horario <- gsub("\n","",as.character(df$Horario))
+df$Dia <- as.Date(df$Dia, format = "%d/%m/%Y")
+df <- df %>% relocate(Agenda, .after = last_col())
+write_xlsx(df, paste(Sys.getenv("USERPROFILE"),"Desktop","tccesalq.xlsx", sep="\\", collapse=NULL))
+
+str(df)
 system("taskkill /im java.exe /f", intern=FALSE, ignore.stdout=FALSE)
 
 #########################
