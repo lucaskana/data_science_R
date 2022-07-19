@@ -1,6 +1,5 @@
 install.packages("dash")
 install.packages("dashCoreComponents")
-
 remotes::install_github("plotly/dashR", upgrade=TRUE)
 
 library(dash)
@@ -40,7 +39,7 @@ ajustar_hash <- function(input) {
   }   
 }
 
-datacleaninggitfiles <- function(df_git_files){
+dataprepare_gitfiles <- function(df_git_files){
   df_git_files <- df_git_files %>% separate(V1, c('V1', 'filespath'),sep = "\t")
   df_git_files <- df_git_files %>% mutate(hash=ajustar_hash(df_git_files$V1))
   df_git_files <- df_git_files %>% fill(hash, .direction = 'down')
@@ -48,6 +47,19 @@ datacleaninggitfiles <- function(df_git_files){
   df_git_files <- df_git_files %>% separate('filespath',c("filename","fileextension"),sep = "\\.",extra="drop")
   return(df_git_files)
 }
+
+dataprepare_gitdate <- function(df_git_by_date){
+  df_git_by_date <- df_git_by_date %>% rename(
+    "hash"=1,
+    "name"=2,
+    "date"=3
+  )
+  df_git_by_date$name <- as.factor(df_git_by_date$name)
+  replacement_vec <- seq(from = 1, to = length(unique(df_git_by_date$name)), by = 1)
+  levels(df_git_by_date$name) <- replacement_vec
+  return(df_git_by_date)
+}
+
 
 dataprepare_gitchanges <- function(df_git_changes){
   df_git_changes <- df_git_changes %>% mutate(hash=ajustar_hash(df_git_changes$V1))
@@ -80,25 +92,37 @@ df_git_changes <- read.csv("src/data/git_changes.csv", sep=";", header=FALSE)
 df_git_files <- read.csv("src/data/git_name_only.txt", sep=";", header=FALSE)
 
 
-df_git_files <- datacleaninggitfiles(df_git_files)
+##########################################
+#
+# Prepare DF
+#
+##########################################
+df_git_files <- dataprepare_gitfiles(df_git_files)
 df_git_changes <- dataprepare_gitchanges(df_git_changes)
+df_git_by_date <- dataprepare_gitdate(df_git_by_date)
 
-df_git_by_date <- df_git_by_date %>% rename(
-  "hash"=1,
-  "name"=2,
-  "date"=3
-)
-
-
+#replacement_vec <- seq(from = 1, to = length(unique(df_git_by_date$name)), by = 1)
+#levels(df_git_by_date$name) <- replacement_vec
+#seq(from = 1, to = 5, by = 1)
+#?setNames
+#setNames( 1:3, c("foo", "bar", "baz") )
+#str(df_git_by_date)
+#x <- factor(df_git_by_date$name)
+#df_git_by_date$name <- as.factor(df_git_by_date$name)
 #df_git_files <- df_git_files %>% separate(V1, c('V1', 'files'),sep = "\t")
 #df_git_files <- df_git_files %>% mutate(hash=ajustar_hash(df_git_files$V1))
 #df_git_files <- df_git_files %>% fill(hash, .direction = 'down')
 #df_git_files <- df_git_files %>% filter(str_detect(V1, "^M|^A|^D"))
 
-
-
 df_git_changes <- filter(df_git_changes, ldelete < 2000)
 df_git_changes <- filter(df_git_changes, linsert < 2000)
+
+
+##########################################
+#
+# Start Dash
+#
+##########################################
 
 # Create a Dash app
 app <- dash_app()
